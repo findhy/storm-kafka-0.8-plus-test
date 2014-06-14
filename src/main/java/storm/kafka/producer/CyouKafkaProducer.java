@@ -42,18 +42,14 @@ public class CyouKafkaProducer extends WebSocketClient{
 
 	@Override
 	public void onMessage(String message) {
-		System.out.println("received: " + message);
-		//KeyedMessage<String, String> data = new KeyedMessage<String, String>("wikipedia","wiki",message);
-		//producer.send(data);
-		Random rnd = new Random();
-		long runtime = new Date().getTime();  
-        String ip = "192.168.2." + rnd.nextInt(255); 
-        String msg = runtime + ",www.example.com," + ip; 
-        KeyedMessage<String, String> data = new KeyedMessage<String, String>("wikipedia", ip, msg);
-        System.out.println("to send: " + data);
-        producer.send(data);
+		sendData(message);
 	}
 
+	public void sendData(String message){
+		KeyedMessage<String, String> data = new KeyedMessage<String, String>("wikipedia","wiki",message);
+		producer.send(data);
+	}
+	
 	public void onFragment(Framedata fragment) {
 		System.out.println("received fragment: "
 				+ new String(fragment.getPayloadData().array()));
@@ -83,7 +79,7 @@ public class CyouKafkaProducer extends WebSocketClient{
 		
 		producer = new Producer<String,String>(config);
 		
-		TestWebsocket c = new TestWebsocket(new URI("ws://wikimon.hatnote.com:9000"),new Draft_10()); 
+        CyouKafkaProducer c = new CyouKafkaProducer(new URI("ws://wikimon.hatnote.com:9000"),new Draft_10()); 
 		c.connect();
 	}
 	
